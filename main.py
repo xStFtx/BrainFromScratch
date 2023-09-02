@@ -50,7 +50,7 @@ class Neuron:
     
     def activate(self, input_data):
         weighted_sum = np.dot(self.weights, input_data) + self.bias
-        self.activation = np.maximum(0, weighted_sum)  # ReLU activation
+        self.activation = np.maximum(0, weighted_sum)  
         if self.dropout_rate > 0:
             self.mask = (np.random.rand(*self.activation.shape) > self.dropout_rate).astype(float)
             self.activation *= self.mask
@@ -87,13 +87,11 @@ class Brain:
         return output_data
     
     def backpropagate(self, target):
-        # Calculate output layer deltas
         output_layer = self.layers[-1]
         for i, neuron in enumerate(output_layer.neurons):
             error = target[i] - neuron.activation
             neuron.delta = error * neuron.activation * (1 - neuron.activation)
         
-        # Backpropagate deltas through hidden layers
         for layer_idx in range(len(self.layers) - 2, -1, -1):
             current_layer = self.layers[layer_idx]
             next_layer = self.layers[layer_idx + 1]
